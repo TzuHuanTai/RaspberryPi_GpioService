@@ -4,7 +4,9 @@ Raspberry Pi use express.js design APIs to control GPIO pins
 
 將Express.js與onoff套件結合，利用WebAPI控制樹梅派GPIO
 
-可以在browser上的設計UI控制數莓派
+只能控制開關，主要是可以在browser上的設計UI，讓數莓派啟動繼電器
+
+其他功能 'falling', 'rising'等等的目前沒需求，之後要用再改
 
 </br>
 
