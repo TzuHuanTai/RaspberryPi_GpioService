@@ -35,6 +35,7 @@ Example:
 `post, body:{"pins":[20, 21]}`http://192.168.0.150/gpio/status
 
 </br>
+
 ## Pins of raspberry pi ##
 <table class="tg" style="undefined;table-layout: fixed; width: 433px">
 <colgroup>
