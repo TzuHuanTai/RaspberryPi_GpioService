@@ -1,38 +1,40 @@
 # RaspberryPi_GpioService
 
-Raspberry Pi use express.js design APIs to control GPIO pins
+Use Express.js, onoff and pigpio to control Raspberry Pi GPIO by Web APIs.
 
-將Express.js與onoff套件結合，利用WebAPI控制樹梅派GPIO
+The purpose is to let browser control the relays.
 
-只能控制開關，主要是可以在browser上的設計UI，讓數莓派啟動繼電器
-
-其他功能 'falling', 'rising'等等的目前沒需求，之後要用再改
+Other features about 'falling', 'rising' is not required for now, add it when need it.
 
 </br>
 
 ## 連接方式 ##
-
-http://{domain}/gpio/{pin_num}/set/{onoff}
-
-</br>
   
 Example:
 
-設定BCM 21 pin高電位:
+Set BCM 21 pin into high voltage:
 
-`GET`http://192.168.0.150/gpio/21/set/1
+`PUT`, `body:{"onoff":1}`, http://localhost/gpio/21
   
-設定BCM 21 pin低電位:
+Set BCM 21 pin into low voltage:
 
-`GET`http://192.168.0.150/gpio/21/set/0
+`PUT`, `body:{"onoff":0}`, http://localhost/gpio/21
  
-釋放BCM 21 pin資源:
+Release BCM 21 pin resource:
 
-`GET`http://192.168.0.150/gpio/21/set/unexport 
+`PUT`, `body:{"onoff":"unexport"}`, http://localhost/gpio/21 
   
-查詢BCM 20, 21 pin的狀態:
+Select BCM 21 pin status:
 
-`post, body:{"pins":[20, 21]}`http://192.168.0.150/gpio/status
+`GET`, http://localhost/gpio/21/status
+
+Select BCM allowed gpioPins status:
+
+`GET`, http://localhost/gpio/status
+
+Set PWM 12 pin 500Hz/30%:
+
+`PUT`, `body:{"freq":500, "duty":300000}`, http://localhost/pwm/12
 
 </br>
 

@@ -66,9 +66,9 @@ process.on('SIGINT', function () {
 /**
  * Main API routers
  */
-app.route('/gpio/status').post((req, res) => {
+app.route('/gpio/status').get((req, res) => {
     let result = [];
-    req.body.pins.forEach(pinNum => {
+    gpioPins.forEach(pinNum => {
         let pin = new onoff.Gpio(Number(pinNum), '');
         let val = pin.readSync();
         let dir = pin.direction();
@@ -78,18 +78,17 @@ app.route('/gpio/status').post((req, res) => {
     res.send(result);
 });
 
-gpioRouter.route('/set/:onoff').get((req, res) => {
-    if (req.params.onoff != 'unexport' && gpioPins.some(x => x == Number(req.params.pin))) {
+gpioRouter.route('/').put((req, res) => {
+    if (req.body.onoff != 'unexport' && gpioPins.some(x => x == Number(req.params.pin))) {
         let pin = new onoff.Gpio(Number(req.params.pin), 'out');
-        pin.writeSync(Number(req.params.onoff));
-        res.send(req.params.onoff);
-    } else if (req.params.onoff == 'unexport') {
+        pin.writeSync(Number(req.body.onoff));
+        res.status(204).end();
+    } else if (req.body.onoff == 'unexport') {
         let pin = new onoff.Gpio(Number(req.params.pin), 'out');
         pin.unexport();
-        res.send(req.params.pin + ' unexported!');
+        res.status(204).end();
     } else {
-        res.status(400);
-        res.send("Pin " + req.params.pin + " can not be controlled!");
+        res.status(400).send("Pin " + req.params.pin + " can not be controlled!");
     }
 });
 
@@ -101,19 +100,18 @@ gpioRouter.route('/status').get((req, res) => {
     res.send(result);
 });
 
-pwmRouter.route('/freq/:freq/duty/:duty').get((req, res) => {
+pwmRouter.route('/').put((req, res) => {
     if (pwmPins.some(x => x == Number(req.params.pin))) {
         let pwmLed = new pigpio.Gpio(Number(req.params.pin));
         pwmLed.mode(pigpio.Gpio.OUTPUT)
-        pwmLed.hardwarePwmWrite(Number(req.params.freq), Number(req.params.duty));
+        pwmLed.hardwarePwmWrite(Number(req.body.freq), Number(req.body.duty));
         let result = {
             pin: req.params.pin,
-            freq: req.params.freq,
-            duty: req.params.duty
+            freq: req.body.freq,
+            duty: req.body.duty
         };
         res.send(result);
     } else {
-        res.status(400);
-        res.send("Pin " + req.params.pin + " can not be controlled!");
+        res.status(204).end();
     }
 });
