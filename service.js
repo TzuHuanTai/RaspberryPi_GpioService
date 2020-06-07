@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import onoff from 'onoff';
 import pigpio from 'pigpio';
+import os from 'os';
 
 /**
  * initialize 
@@ -29,11 +30,13 @@ const gpioPins = [20, 21, 22, 23, 24, 25, 26];
 app.use(express.json());
 
 // use CORS
+let corsOrigin = [].concat(...Object.values(os.networkInterfaces()))
+                .filter(x => x.family === 'IPv4')
+                .map(x => `http://${x.address}`);
+corsOrigin.push('http://localhost');
+
 const corsOptions = {
-    origin: [
-        'http://localhost',
-        'http://localhost:3000',
-    ],
+    origin: corsOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
 }

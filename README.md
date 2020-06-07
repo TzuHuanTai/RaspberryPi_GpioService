@@ -6,11 +6,15 @@ The purpose is to let browser control the relays.
 
 Other features about 'falling', 'rising' is not required for now, add it when need it.
 
-</br>
+## Deploy ##
 
-## 連接方式 ##
-  
-Example:
+* `git clone`.
+
+* `npm install` download packages.
+
+* `sudo crontab -e` add a line below `@reboot sleep 10 && node /{path}/service.js`. let service auto run when turn on Raspberry Pi.
+
+## Connect example ##
 
 Set BCM 21 pin into high voltage:
 
