@@ -3,6 +3,12 @@ import cors from 'cors';
 import onoff from 'onoff';
 import pigpio from 'pigpio';
 import os from 'os';
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+var privateKey  = fs.readFileSync('/etc/ssl/greenhouse.key');
+var certificate = fs.readFileSync('/etc/ssl/greenhouse.crt');
+var credentials = {key: privateKey, cert: certificate};
 
 /**
  * initialize 
@@ -33,8 +39,7 @@ app.use(express.json());
 let corsOrigin = [].concat(...Object.values(os.networkInterfaces()))
                 .filter(x => x.family === 'IPv4')
                 .map(x => `http://${x.address}`);
-corsOrigin.push('http://localhost');
-
+corsOrigin.push('http://localhost');            
 const corsOptions = {
     origin: corsOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -45,10 +50,6 @@ app.use(cors(corsOptions));
 // use routers
 app.use('/gpio/:pin', gpioRouter);
 app.use('/pwm/:pin', pwmRouter);
-
-app.listen(3000, 'localhost', () => {
-    console.log('Gpio api is listening on port 3000!');
-});
 
 // shut down with `Ctrl + C`
 process.on('SIGINT', function () {
@@ -117,4 +118,14 @@ pwmRouter.route('/').put((req, res) => {
     } else {
         res.status(204).end();
     }
+});
+
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+httpServer.listen(3000, () => {
+    console.log('Gpio api is listening on port 3000!');
+});
+httpsServer.listen(3443, () => {
+    console.log('Gpio api is listening on port 3433!');
 });
