@@ -6,9 +6,9 @@ import os from 'os';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
-var privateKey  = fs.readFileSync('/etc/ssl/greenhouse.key');
+var privateKey = fs.readFileSync('/etc/ssl/greenhouse.key');
 var certificate = fs.readFileSync('/etc/ssl/greenhouse.crt');
-var credentials = {key: privateKey, cert: certificate};
+var credentials = { key: privateKey, cert: certificate };
 
 /**
  * initialize 
@@ -36,10 +36,13 @@ const gpioPins = [20, 21, 22, 23, 24, 25, 26];
 app.use(express.json());
 
 // use CORS
-let corsOrigin = [].concat(...Object.values(os.networkInterfaces()))
-                .filter(x => x.family === 'IPv4')
-                .map(x => `http://${x.address}`);
-corsOrigin.push('http://localhost');            
+let corsOriginHttp = [].concat(...Object.values(os.networkInterfaces()))
+                    .filter(x => x.family === 'IPv4')
+                    .map(x => `http://${x.address}`);
+let corsOriginHttps = corsOriginHttp.map(v => v.replace('http://', 'https://'));
+
+let corsOrigin = corsOriginHttp.concat(corsOriginHttps);
+
 const corsOptions = {
     origin: corsOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -123,8 +126,8 @@ pwmRouter.route('/').put((req, res) => {
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
-httpServer.listen(3000, () => {
-    console.log('Gpio api is listening on port 3000!');
+httpServer.listen(3080, () => {
+    console.log('Gpio api is listening on port 3080!');
 });
 httpsServer.listen(3443, () => {
     console.log('Gpio api is listening on port 3433!');
