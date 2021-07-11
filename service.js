@@ -38,7 +38,8 @@ app.use(express.json());
 // use CORS
 let corsOriginHttp = [].concat(...Object.values(os.networkInterfaces()))
                     .filter(x => x.family === 'IPv4')
-                    .map(x => `http://${x.address}`);
+                    .map(x => `http://${x.address}`)
+                    .concat(`http://${os.hostname()}.local`);
 let corsOriginHttps = corsOriginHttp.map(v => v.replace('http://', 'https://'));
 
 let corsOrigin = corsOriginHttp.concat(corsOriginHttps);
