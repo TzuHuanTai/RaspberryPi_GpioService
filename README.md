@@ -8,11 +8,33 @@ Other features about 'falling', 'rising' is not required for now, add it when ne
 
 ## Deploy ##
 
+* `sudo apt-get install pigpio`
 * `git clone`.
-
 * `npm install` download packages.
+* <del>`sudo crontab -e` add a line below `@reboot sleep 10 && node /{path}/service.js`. let service auto run when turn on Raspberry Pi.
 
-* `sudo crontab -e` add a line below `@reboot sleep 10 && node /{path}/service.js`. let service auto run when turn on Raspberry Pi.
+* Create Linux Service
+  1. `sudo nano /etc/systemd/system/gpio-api.service`
+  2. Config sample:
+      ```
+      [Unit]
+      Description= GPIO api service via nodejs
+
+      [Service]
+      WorkingDirectory=/home/pi/IoT/RaspberryPi_GpioService
+      ExecStart=/usr/bin/node /home/pi/IoT/RaspberryPi_GpioService/service.js
+      Restart=always
+      # Restart service after 10 seconds if the dotnet service crashes:
+      RestartSec=10
+      ```
+  3. Enable and run the service
+      ```
+      sudo systemctl enable gpio-api.service
+      sudo systemctl start gpio-api.service
+      ```
+
+[Install]
+WantedBy=multi-user.target
 
 ## Connect example ##
 
