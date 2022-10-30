@@ -26,6 +26,9 @@ Other features about 'falling', 'rising' is not required for now, add it when ne
       Restart=always
       # Restart service after 10 seconds if the dotnet service crashes:
       RestartSec=10
+      
+      [Install]
+      WantedBy=multi-user.target
       ```
   3. Enable and run the service
       ```
@@ -33,8 +36,7 @@ Other features about 'falling', 'rising' is not required for now, add it when ne
       sudo systemctl start gpio-api.service
       ```
 
-[Install]
-WantedBy=multi-user.target
+
 
 ## Connect example ##
 
